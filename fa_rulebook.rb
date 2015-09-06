@@ -58,6 +58,8 @@ class DFADesign < Struct.new(:start_state, :accept_states, :rule_book)
 end
 
 class NFARulebook < Struct.new(:rules)
+  # since each state returns an enumerable
+  # flat_map returns a new flat sequence
   def next_states(states, char)
     states.flat_map { |state|
       follow_rules_for(state, char)
