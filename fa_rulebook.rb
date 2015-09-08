@@ -73,11 +73,24 @@ class NFARulebook < Struct.new(:rules)
   def rules_for(state, char)
     rules.select { |rule| rule.applies_to?(state, char) }
   end
+
+  def follow_free_moves(states)
+    more_states = next_states(states, nil)
+    if more_states.subset?(states)
+      states
+    else
+      follow_free_moves(states + more_states)
+    end
+  end
 end
 
 class NFA < Struct.new(:current_states, :accept_states, :rule_book)
   def accepting?
     (current_states & accept_states).any?
+  end
+
+  def current_states
+    rule_book.follow_free_moves(super)
   end
 
   def read_char(char)
@@ -115,3 +128,24 @@ end
 # -> false
 # nfa.accepts?('baa')
 # -> true
+
+# example -- multiple of two or three letters with free move
+# rulebook = NFARulebook.new([
+#     FARule.new(1, nil, 2),
+#     FARule.new(1, nil, 4),
+#     FARule.new(2, 'a', 3),
+#     FARule.new(3, 'a', 2),
+#     FARule.new(4, 'a', 5),
+#     FARule.new(5, 'a', 6),
+#     FARule.new(6, 'a', 4)])
+# nfa_design = NFADesign.new(1, [2,4], rulebook)
+# nfa_design.accepts?('a')
+# => false 
+# nfa_design.accepts?('aa')
+# => true 
+# nfa_design.accepts?('aaa')
+# => true 
+# nfa_design.accepts?('aaaa')
+# => true 
+# nfa_design.accepts?('aaaaa')
+# => false 
