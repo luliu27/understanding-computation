@@ -90,6 +90,8 @@ class NFA < Struct.new(:current_states, :accept_states, :rule_book)
   end
 
   def current_states
+    # super means current_states from Struct
+    # in this case, the value of current_states by Struct
     rule_book.follow_free_moves(super)
   end
 
