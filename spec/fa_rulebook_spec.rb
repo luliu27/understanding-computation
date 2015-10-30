@@ -16,13 +16,13 @@ describe DFADesign do
 
   describe "#accepts?" do
     it "doesn't accept 'a'" do
-      expect(@dfa_design.accepts?('a')).to eq(false)
+      expect(@dfa_design.accepts?('a')).to be false
     end
     it "doesn't accept 'baa'" do
-      expect(@dfa_design.accepts?('baa')).to eq(false)
+      expect(@dfa_design.accepts?('baa')).to be false
     end
     it "accepts 'baba'" do
-      expect(@dfa_design.accepts?('baba')).to eq(true)
+      expect(@dfa_design.accepts?('baba')).to be true
     end
   end
 end
@@ -54,25 +54,25 @@ describe NFADesign do
 
   describe "#accepts?" do
     it "doesn't accept 'ba'" do
-      expect(@nfa_design.accepts?('ba')).to eq(false)
+      expect(@nfa_design.accepts?('ba')).to be false
     end
     it "accepts 'baa'" do
-      expect(@nfa_design.accepts?('baa')).to eq(true)
+      expect(@nfa_design.accepts?('baa')).to be true
     end
     it "doesn't accept 'a'" do
-      expect(@nfa_freemove.accepts?('a')).to eq(false)
+      expect(@nfa_freemove.accepts?('a')).to be false
     end
     it "accepts 'aa'" do
-      expect(@nfa_freemove.accepts?('aa')).to eq(true)
+      expect(@nfa_freemove.accepts?('aa')).to be true
     end
     it "accepts 'aaa'" do
-      expect(@nfa_freemove.accepts?('aaa')).to eq(true)
+      expect(@nfa_freemove.accepts?('aaa')).to be true
     end
     it "accepts 'aaaa'" do
-      expect(@nfa_freemove.accepts?('aaaa')).to eq(true)
+      expect(@nfa_freemove.accepts?('aaaa')).to be true
     end
      it "doesn't accept 'aaaaa'" do
-      expect(@nfa_freemove.accepts?('aaaaa')).to eq(false)
+      expect(@nfa_freemove.accepts?('aaaaa')).to be false
     end
   end
 end
