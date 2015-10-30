@@ -1,4 +1,4 @@
-# deterministic pushdown automata
+# pushdown automata
 
 ###
 # ruby regex for infinite nested brackets
@@ -15,6 +15,8 @@
 #   /x
 # ['(()', '())', '(())', '(()(()()))', '((((((((((()))))))))))'].grep(balanced)
 # => ["(())", "(()(()()))", "((((((((((()))))))))))"]
+
+require 'set'
 
 class Stack < Struct.new(:contents)
   def push(char)
@@ -136,6 +138,66 @@ class DPDADesign < Struct.new(:start_state, :bottom_char,
   end  
 end
 
+class NPDARulebook < Struct.new(:rules)
+  def next_configurations(configurations, char)
+    configurations.flat_map { |configuration|
+      follow_rules_for(configuration, char)
+    }.to_set
+  end
+
+  def follow_rules_for(configuration, char)
+    rules_for(configuration, char).map { |rule|
+      rule.follow(configuration) }
+  end
+
+  def rules_for(configuration, char)
+    rules.select { |rule| rule.applies_to?(configuration, char) }
+  end
+
+  def follow_free_moves(configurations)
+    more_configurations = next_configurations(configurations, nil)
+    if more_configurations.subset?(configurations)
+      configurations
+    else
+      follow_free_moves(configurations + more_configurations)
+    end
+  end
+end
+
+class NPDA < Struct.new(:current_configurations, :accept_states, :rulebook)
+  def accepting?
+    current_configurations.any? { |config|
+      accept_states.include?(config.state) }
+  end
+
+  def current_configurations
+    rulebook.follow_free_moves(super)
+  end
+
+  def read_char(char)
+    self.current_configurations = 
+      rulebook.next_configurations(current_configurations, char)
+  end
+
+  def read_string(string)
+    string.chars.each do |char|
+      read_char(char)
+    end
+  end
+end
+
+class NPDADesign < Struct.new(:start_state, :bottom_char,
+                              :accept_states, :rulebook)
+  def to_npda
+    start_stack = Stack.new([bottom_char])
+    start_configuration = PDAConfiguration.new(start_state, start_stack)
+    NPDA.new(Set[start_configuration], accept_states, rulebook)
+  end
+
+  def accepts?(string)
+    to_npda.tap { |npda| npda.read_string(string) }.accepting?
+  end
+end
 
 # example -- balanced parentheses
 # rulebook = DPDARulebook.new([
