@@ -115,39 +115,3 @@ class NFADesign < Struct.new(:start_state, :accept_states, :rule_book)
     to_nfa.tap {|nfa| nfa.read_string(string)}.accepting?
   end
 end
-
-# example -- third-from-last character is 'b'
-# rulebook = NFARulebook.new([
-#       FARule.new(1, 'a', 1),
-#       FARule.new(1, 'b', 1),
-#       FARule.new(1, 'b', 2),
-#       FARule.new(2, 'a', 3),
-#       FARule.new(2, 'b', 3),
-#       FARule.new(3, 'a', 4),
-#       FARule.new(3, 'b', 4)])
-# nfa = NFADesign.new(1, [4], rulebook)
-# nfa.accepts?('ba')
-# -> false
-# nfa.accepts?('baa')
-# -> true
-
-# example -- multiple of two or three letters with free move
-# rulebook = NFARulebook.new([
-#     FARule.new(1, nil, 2),
-#     FARule.new(1, nil, 4),
-#     FARule.new(2, 'a', 3),
-#     FARule.new(3, 'a', 2),
-#     FARule.new(4, 'a', 5),
-#     FARule.new(5, 'a', 6),
-#     FARule.new(6, 'a', 4)])
-# nfa_design = NFADesign.new(1, [2,4], rulebook)
-# nfa_design.accepts?('a')
-# => false 
-# nfa_design.accepts?('aa')
-# => true 
-# nfa_design.accepts?('aaa')
-# => true 
-# nfa_design.accepts?('aaaa')
-# => true 
-# nfa_design.accepts?('aaaaa')
-# => false 
