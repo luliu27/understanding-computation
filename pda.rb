@@ -198,17 +198,3 @@ class NPDADesign < Struct.new(:start_state, :bottom_char,
     to_npda.tap { |npda| npda.read_string(string) }.accepting?
   end
 end
-
-# example -- balanced parentheses
-# rulebook = DPDARulebook.new([
-#     PDARule.new(1, '(', 2, '$', ['b', '$']),
-#     PDARule.new(2, '(', 2, 'b', ['b', 'b']),
-#     PDARule.new(2, ')', 2, 'b', []),
-#     PDARule.new(2, nil, 1, '$', ['$'])])
-# dpda_design = DPDADesign.new(1, '$', [1], rulebook)
-# dpda_design.accepts?('(((((((((())))))))))')
-# => true
-# dpda_design.accepts?('()(())((()))(()(()))')
-# => true
-# dpda_design.accepts?('(()(()(()()(()()))()')
-# => false

@@ -5,8 +5,8 @@ describe "Regular Expressions" do
   before :all do
     # generate pattern /(a|bc)*/
     @pattern = Repeat.new(
-                 Choose.new(Literal.new('a'),
-                   Concatenate.new(Literal.new('b'), Literal.new('c'))))
+                          Choose.new(Literal.new('a'),
+                                     Concatenate.new(Literal.new('b'), Literal.new('c'))))
   end
 
   describe "#matches?" do
