@@ -140,19 +140,3 @@ class Repeat < Struct.new(:pattern)
     NFADesign.new(start_state, accept_states, rule_book)
   end
 end
-
-# example:
-# pattern = Repeat.new(
-#             Choose.new(Literal.new('a'),
-#               Concatenate.new(Literal.new('b'), Literal.new('c'))))
-# => /(a|bc)*/ 
-# pattern.matches?('aaaa')
-# => true 
-# pattern.matches?('abababab')
-# => false 
-# pattern.matches?('bcbc')
-# => true 
-# pattern.matches?('bcb')
-# => false 
-# pattern.matches?('bca')
-# => true 
