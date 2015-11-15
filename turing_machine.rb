@@ -44,11 +44,36 @@ class TMRule < Struct.new(:state, :char, :next_state, :write_char, :direction)
   end
 end
 
-class TMRulebook < Struct.new(:rules)
+class DTMRulebook < Struct.new(:rules)
+  def next_configuration(configuration)
+    rule_for(configuration).follow(configuration)
+  end
+
+  def applies_to?(configuration)
+    !rule_for(configuration).nil?
+  end
+
+  def rule_for(configuration)
+    rules.detect { |rule| rule.applies_to?(configuration) }
+  end
 end
 
-class TM < Struct.new(:current_configuation, :accept_states, :rulebook)
-end
+class DTM < Struct.new(:current_configuration, :accept_states, :rulebook)
+  def accepting?
+    accept_states.include?(current_configuration.state)
+  end
 
-class TMDesign < Struct.new(:start_state, :accept_states, :rulebook)
+  def stuck?
+    !accepting? &&
+      !rulebook.applies_to?(current_configuration)
+  end
+
+  def step
+    self.current_configuration =
+      rulebook.next_configuration(current_configuration)
+  end
+
+  def run
+    step until accepting? || stuck?
+  end
 end
