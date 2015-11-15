@@ -21,7 +21,27 @@ end
 class TMConfiguration < Struct.new(:state, :tape)
 end
 
-class TMRule < Struct.new(:state, :next_state)
+class TMRule < Struct.new(:state, :char, :next_state, :write_char, :direction)
+  def applies_to?(configuration)
+    state == configuration.state &&
+      char == configuration.tape.middle
+  end
+
+  def follow(configuration)
+    if applies_to?(configuration)
+      TMConfiguration.new(next_state, next_tape(configuration))
+    end
+  end
+
+  def next_tape(configuration)
+    tw = configuration.tape.write(write_char)
+    case direction
+    when :left
+      tw.move_head_left
+    when :right
+      tw.move_head_right
+    end
+  end
 end
 
 class TMRulebook < Struct.new(:rules)
